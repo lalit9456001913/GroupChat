@@ -47,11 +47,11 @@ io.on('connection', (socket) => {
   // Handle group chat messages
   socket.on('sendMessage', async (data) => {
     const { groupId, userId, message } = data;
-
+    console.log("data---", data)
     // Save the message to the database (if needed)
 
     await messageService.sendMessage({ senderId: userId, groupId, content: message.content });
-    console.log("data---", data)
+
     // Broadcast the message to all clients in the group
     io.to(groupId).emit('message', data);
   });

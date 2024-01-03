@@ -17,28 +17,36 @@ const navItemStyles = {
     color: '#fff',
 };
 
+const logoutButtonStyles = {
+    margin: '0 10px',
+    cursor: 'pointer',
+    textDecoration: 'none',
+    color: '#fff',
+    backgroundColor: '#007bff',  // Add your preferred background color here
+};
+
+
 const Navbar = ({ onClickLogin, onClickLogout, onClickCreateUser, onClickCreateGroup, onClickViewAllGroups, onClickViewAllUsers, auth }) => {
     return (
         <div style={navbarStyles}>
 
             <div>
-                <span style={navItemStyles} onClick={onClickCreateUser}>
+
+                {auth && auth?.isAdmin && <span style={navItemStyles} onClick={onClickCreateUser}>
                     Create User
-                </span>
+                </span>}
                 <span style={navItemStyles} onClick={onClickCreateGroup}>
                     Create Group
-                </span>
-                <span style={navItemStyles} onClick={onClickViewAllGroups}>
-                    View All groups
-                </span>
-                <span style={navItemStyles} onClick={onClickViewAllUsers}>
-                    View All users
                 </span>
 
             </div>
             <div>
+
+                {auth && <span style={navItemStyles}>
+                    {auth?.username}
+                </span>}
                 {auth && (<>
-                    <span style={navItemStyles} onClick={onClickLogout}>
+                    <span style={logoutButtonStyles} onClick={onClickLogout}>
                         Logout
                     </span>
                 </>)}

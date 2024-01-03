@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import CreateGroupForm from '../components/CreateGroupForm';
 import Navbar from '../components/Navbar';
-import { createGroup, getAllGroups } from '../../services/group.service';
+import { createGroup, getAllGroups, deleteGroupById } from '../../services/group.service';
 import { removeAuth } from '../../services/auth.service';
 import { useRouter } from 'next/router';
-import { getAllUsers, loginUser } from '../../services/user.service';
+import { createUser, getAllUsers, deleteUser } from '../../services/user.service';
+import CreateUserForm from '../components/CreateUserForm';
+import GroupList from '../components/GroupList';
+import UserListing from '../components/UserListing';
 
-const Dashboard = ({ auth }) => {
-
+const Dashboard = ({ auth, groupsData, usersData }) => {
   const [showGroup, setShowGroup] = useState(false);
+  const [showUser, setShowUser] = useState(false);
+  const [groups, setGroups] = useState(groupsData);
+  const [users, setUsers] = useState(usersData);
   const router = useRouter();
   const [userOptions, setUserOptions] = useState([]);
 
@@ -17,19 +22,24 @@ const Dashboard = ({ auth }) => {
 
   useEffect(() => {
     fetchAllUsers();
-  }, []);
+  }, [showUser]);
 
 
   const handleCreateGroup = async (groupData) => {
     try {
       const data = {
         name: groupData?.groupName,
-        userId: auth?.id,
+        userId: groupData.groupAdmin.value,
         members: groupData.members.map(item => item.value)
       }
+      data.members.push(groupData.groupAdmin.value);
       const response = await createGroup(data);
       if (response.status) {
-        router.push('/groups')
+        const groupRes = await getAllGroups();
+        if (groupRes.status) {
+          setGroups(groupRes.data);
+        }
+        setShowGroup(false)
       } else {
         console.error(data.error);
       }
@@ -37,8 +47,21 @@ const Dashboard = ({ auth }) => {
       console.error(error);
     }
   };
+
+  const handleCreateUser = async (userData) => {
+    try {
+      const response = await createUser(userData);
+      if (response.status) {
+        setShowUser(false)
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+  };
+
   const onClickCreateUser = () => {
-    router.push('/users/create-user')
+    setShowUser(true);
   }
 
   const onClickLogout = () => {
@@ -56,17 +79,29 @@ const Dashboard = ({ auth }) => {
     setShowGroup(true)
   };
 
-  const onClickViewAllGroups = () => {
-    router.push('/groups')
-  };
-
-  const onClickViewAllUsers = () => {
-    router.push('/users')
+  const onDeleteGroup = async (id, adminId) => {
+    const response = await deleteGroupById(id, adminId);
+    if (response.status) {
+      const res = await getAllGroups();
+      if (res.status) {
+        setGroups(res.data);
+      }
+    }
   }
 
+  const onDeleteUser = async (id) => {
+    const response = await deleteUser(id);
+    if (response.status) {
+      const res = await getAllUsers();
+      if (res.status) {
+        setUsers(res.data);
+      }
+    }
+  }
   const fetchAllUsers = async () => {
     const resp = await getAllUsers();
     if (resp.status) {
+      setUsers(resp.data);
       const copyData = [...resp?.data];
       const newModifiedData = copyData.map(item => {
         return {
@@ -79,8 +114,11 @@ const Dashboard = ({ auth }) => {
     }
   }
 
-  const onClose = () => {
+  const onCloseGroup = () => {
     setShowGroup(false);
+  }
+  const onCloseUser = () => {
+    setShowUser(false);
   }
 
   return (
@@ -91,11 +129,13 @@ const Dashboard = ({ auth }) => {
         onClickCreateUser={onClickCreateUser}
         onClickCreateGroup={onClickCreateGroup}
         auth={auth}
-        onClickViewAllGroups={onClickViewAllGroups}
-        onClickViewAllUsers={onClickViewAllUsers}
       />
-      <CreateGroupForm onCreateGroup={handleCreateGroup} showGroup={showGroup} options={userOptions} onClose={onClose} />
-
+      <CreateGroupForm onCreateGroup={handleCreateGroup} showGroup={showGroup} options={userOptions} onCloseGroup={onCloseGroup} />
+      <CreateUserForm onCreateUser={handleCreateUser} showUser={showUser} onCloseUser={onCloseUser} />
+      <div style={{ display: 'flex' }}>
+        <GroupList groups={groups} auth={auth} onDeleteGroup={onDeleteGroup} />
+        <UserListing users={users} auth={auth} onDeleteUser={onDeleteUser} />
+      </div>
     </div>
   );
 };

@@ -6,7 +6,7 @@ const userController = require('../controllers/users/userController');
 
 // Authentication middleware for admin routes
 
-router.get('/', authMiddleware.authenticateUser, userController.getAllUsers);
+router.get('/', userController.getAllUsers);
 
 router.get('/:id', userController.getUserById);
 

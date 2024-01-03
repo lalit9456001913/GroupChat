@@ -1,14 +1,10 @@
 // pages/users/[userId].js
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import { getUserById, getAllUsers } from '../../../services/user.service';
-import { createGroup } from '../../../services/group.service';
-import CreateGroupForm from '../../components/CreateGroupForm';
+import { getUserById } from '../../../services/user.service';
 
 const UserDetails = () => {
     const [user, setUser] = useState();
-    const [showCreateGroup, setShowCreateGroup] = useState(false);
-    const [userOptions, setUserOptions] = useState([]);
     const router = useRouter();
     const { id: userId } = router.query;
 
@@ -27,62 +23,21 @@ const UserDetails = () => {
     };
 
 
-    const handleCreateGroup = async (groupData) => {
-        try {
-            const data = {
-                name: groupData?.groupName,
-                userId,
-                members: groupData.members.map(item => item.value)
-            }
-            const response = await createGroup(data);
-            console.log("response----", response)
-            if (response.status) {
-                router.push('/groups')
-            } else {
-                console.error(data.error);
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
-    const fetchAllUsers = async () => {
-        const resp = await getAllUsers();
-        if (resp.status) {
-            const copyData = [...resp?.data];
-            const newModifiedData = copyData.map(item => {
-                return {
-                    label: item.username,
-                    value: item._id
-                }
-            })
-
-            setUserOptions(newModifiedData);
-        }
-    }
 
     // Call fetchUserDetails when the component mounts or when userId changes
     React.useEffect(() => {
         if (userId) {
             fetchUserDetails();
-            fetchAllUsers();
         }
     }, [userId]);
 
-    const onClickCreateGroup = () => {
-        setShowCreateGroup(true)
-    };
 
-    const onClose = () => {
-        setShowCreateGroup(false)
-    }
-   
+
     return (
         <div>
             {/* Header with "Create Group" button */}
             <header>
                 <h1>User Details</h1>
-                <button onClick={onClickCreateGroup}>Create Group</button>
             </header>
 
             {/* Display user details or loading state */}
@@ -91,7 +46,6 @@ const UserDetails = () => {
                 <p>User Email: {user?.email}</p>
                 {/* Add other user details as needed */}
             </div>
-            <CreateGroupForm onCreateGroup={handleCreateGroup} showGroup={showCreateGroup} options={userOptions} onClose={onClose} />
         </div>
     );
 };

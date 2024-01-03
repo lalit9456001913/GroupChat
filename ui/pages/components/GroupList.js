@@ -1,38 +1,105 @@
 // /frontend/components/GroupList.js
-import React from 'react';
-const groupListStyles = {
-  border: '1px solid #ccc',
-  padding: '10px',
-  margin: '10px',
-  backgroundColor: '#f9f9f9',
-};
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import { getAllGroups, deleteGroupById } from '../../services/group.service';
+import { useRouter } from 'next/router';
 
-const groupUlStyles = {
-  listStyleType: 'none',
-  padding: '0',
-};
+const GroupContainer = styled.div`
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+`;
 
-const groupItemStyles = {
-  cursor: 'pointer',
-  padding: '8px',
-  margin: '4px',
-  border: '1px solid #ddd',
-  backgroundColor: '#fff',
-  transition: 'background-color 0.3s ease',
-};
+const GroupItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
 
-const GroupList = ({ groups, onSelectGroup }) => {
+  &:last-child {
+    border-bottom: none;
+  }
+
+  h3 {
+    margin: 0;
+  }
+
+  button {
+    background-color: #4caf50;
+    color: #fff;
+    padding: 8px;
+    margin-left: 10px;
+    cursor: pointer;
+  }
+`;
+
+const GroupList = ({ auth, groups, onDeleteGroup }) => {
+  const router = useRouter();
+
+  const onDelete = async (id, adminId) => {
+    onDeleteGroup(id, adminId);
+  }
+
   return (
-    <div style={groupListStyles}>
-      <h2>Groups</h2>
-      <ul style={groupUlStyles}>
+    <>
+      <GroupContainer style={{ display: 'inline-block', verticalAlign: 'top' }}>
+        <h2>{auth?.username} Messaging Groups</h2>
+        {groups.map((group) => {
+          if (group.members.some(member => member._id == auth.id)) {
+            return (
+              <GroupItem key={group._id}>
+                <div>
+                  <h3>{group.name}</h3>
+                </div>
+                <div>
+                  <button onClick={() => { router.push(`/groups/${group?._id}`) }}>view</button>
+                  <button onClick={() => { router.push(`/groups/${group?._id}/edit`) }}>Edit</button>
+                  {auth.isAdmin && <button onClick={() => { onDelete(group?._id, group?.admin) }}>Delete</button>}
+                </div>
+              </GroupItem>
+            )
+          }
+        })}
+      </GroupContainer>
+      <GroupContainer style={{ display: 'inline-block', verticalAlign: 'top' }}>
+        <h2>{auth?.username} Groups (Admin)</h2>
+        {groups.map((group) => {
+          if (group.admin == auth.id) {
+            return (
+              <GroupItem key={group._id}>
+                <div>
+                  <h3>{group.name}</h3>
+                </div>
+                <div>
+                  <button onClick={() => { router.push(`/groups/${group?._id}`) }}>view</button>
+                  <button onClick={() => { router.push(`/groups/${group?._id}/edit`) }}>Edit</button>
+                  <button onClick={() => { onDelete(group?._id, group?.admin) }}>Delete</button>
+                </div>
+              </GroupItem>
+            )
+          }
+        })}
+      </GroupContainer>
+      <GroupContainer style={{ display: 'inline-block', verticalAlign: 'top' }}>
+        <h2>All Group List</h2>
         {groups.map((group) => (
-          <li key={group._id} onClick={() => onSelectGroup(group._id)} style={groupItemStyles}>
-            {group.name}
-          </li>
+          <GroupItem key={group._id}>
+            <div>
+              <h3>{group.name}</h3>
+            </div>
+            <div>
+              <button onClick={() => { router.push(`/groups/${group?._id}`) }}>view</button>
+              <button onClick={() => { router.push(`/groups/${group?._id}/edit`) }}>Edit</button>
+              {auth.isAdmin && <button onClick={() => { onDelete(group?._id, group?.admin) }}>Delete</button>}
+            </div>
+          </GroupItem>
         ))}
-      </ul>
-    </div>
+      </GroupContainer>
+
+    </>
   );
 };
 
