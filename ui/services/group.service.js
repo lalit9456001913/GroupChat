@@ -7,6 +7,6 @@ export const updateGroup = (id, data) => HttpService.putWithAuth(UPDATE_GROUP_UR
 
 export const getAllGroups = () => HttpService.getWithOutAuth(GET_ALL_GROUPS);
 
-export const deleteGroupById = (id) => HttpService.deleteWithAuth(DELETE_GROUP_URL(id))
+export const deleteGroupById = (id, userId) => HttpService.deleteWithAuth(DELETE_GROUP_URL(id, userId))
 
 export const getGroupById = (id) => HttpService.getWithOutAuth(GET_GROUP_BY_ID_URL(id));

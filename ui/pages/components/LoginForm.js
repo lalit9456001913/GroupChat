@@ -38,7 +38,7 @@ const Login = () => {
         const response = await loginUser({ email, password });
         if (response.status) {
             setAuth(response.data);
-            router.push('/groups');
+            router.push('/dashboard');
         } else {
             setErrorOnSubmit('Eigther Email or Password is wrong!')
         }

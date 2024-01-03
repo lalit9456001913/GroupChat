@@ -1,8 +1,8 @@
-// UserList.jsx
+// pages/users/[userId].js
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { getAllUsers, deleteUser } from '../../services/user.service';
 import { useRouter } from 'next/router';
+
 
 const UserContainer = styled.div`
   max-width: 600px;
@@ -36,20 +36,12 @@ const UserItem = styled.div`
   }
 `;
 
-const UserList = ({ usersData }) => {
+const UserDetails = ({ users, auth }) => {
     const router = useRouter();
-    const [users, setUsers] = useState(usersData);
 
-    const onDelete = async (id) => {
-        const response = await deleteUser(id);
-        if (response.status) {
-            const res = await getAllUsers();
-            if (res.status) {
-                setUsers(res.data);
-            }
-        }
+    const onDelete=(id)=>{
+
     }
-
     return (
         <UserContainer>
             <h2>User List</h2>
@@ -70,29 +62,4 @@ const UserList = ({ usersData }) => {
     );
 };
 
-export const getServerSideProps = async ({ req }) => {
-    try {
-        const auth = JSON.parse(req.cookies.AUTH);
-
-        if (!auth.token) throw new Error('unAuthorized');
-
-        const userResp = await getAllUsers();
-        let usersData;
-        if (userResp.status) {
-            usersData = userResp.data
-        } else {
-            usersData = []
-        }
-        return { props: { auth, usersData } };
-    } catch (err) {
-        return {
-            redirect: {
-                destination: '/login',
-                permanent: false
-            }
-        };
-    }
-};
-
-
-export default UserList;
+export default UserDetails;

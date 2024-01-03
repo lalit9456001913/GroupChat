@@ -6,12 +6,9 @@ import Modal from 'react-modal';
 import * as yup from 'yup';
 import { yupValidator } from '../../lib/yup-validator';
 
-const validationSchema = yup.object().shape({
-  groupName: yup.string().required('Group Name is required'),
-  members: yup.array().min(1, 'Select at least one member').required('Members are required'),
-});
 
-const CreateGroupForm = ({ onCreateGroup, options, showGroup, onClose }) => {
+
+const CreateGroupForm = ({ onCreateGroup, options, showGroup, onCloseGroup }) => {
 
   const [isButtonHovered, setButtonHovered] = useState(false);
   const {
@@ -19,9 +16,14 @@ const CreateGroupForm = ({ onCreateGroup, options, showGroup, onClose }) => {
     control,
     register,
     reset,
+    watch,
     formState: { errors }, // Access form errors from react-hook-form
   } = useForm({
-    resolver: yupValidator(validationSchema), // Integrate yup validation schema
+    resolver: yupValidator(yup.object().shape({
+      groupName: yup.string().required('Group Name is required'),
+      groupAdmin: yup.object().required('Group Admin is required'),
+      members: yup.array().test('is-same-as-group-Admin', 'Group Admin cannot be included in the members list', (membersList) => membersList.length && !membersList.some(member => member.value == watch('groupAdmin').value)),
+    })),
   });
 
 
@@ -29,9 +31,10 @@ const CreateGroupForm = ({ onCreateGroup, options, showGroup, onClose }) => {
     await onCreateGroup(data);
     reset({
       groupName: '',
+      groupAdmin: '',
       members: '',
     });
-    onClose();
+    onCloseGroup();
   };
 
   const inputStyle = {
@@ -92,7 +95,7 @@ const CreateGroupForm = ({ onCreateGroup, options, showGroup, onClose }) => {
   return (
     <Modal
       isOpen={showGroup}
-      onRequestClose={onClose}
+      onRequestClose={onCloseGroup}
       contentLabel="Create Group Form"
       style={customStyles}
       ariaHideApp={false}
@@ -103,6 +106,17 @@ const CreateGroupForm = ({ onCreateGroup, options, showGroup, onClose }) => {
           Group Name:
           <input type="text" name="groupName" {...register('groupName')} style={inputStyle} />
           {errors.groupName && <p style={{ color: 'red' }}>{errors.groupName.message}</p>}
+        </label>
+        <label>
+          Select Group Admin:
+          <Controller
+            name="groupAdmin"
+            control={control}
+            render={({ field }) => (
+              <Select {...field} options={options} style={inputStyle} />
+            )}
+          />
+          {errors.groupAdmin && <p style={{ color: 'red' }}>{errors.groupAdmin.message}</p>}
         </label>
         <label>
           Members:
@@ -118,7 +132,7 @@ const CreateGroupForm = ({ onCreateGroup, options, showGroup, onClose }) => {
         <div style={buttonContainerStyle}>
           <button
             type="button"
-            onClick={onClose}
+            onClick={onCloseGroup}
             style={cancelButtonStyle}
           >
             Cancel

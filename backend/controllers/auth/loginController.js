@@ -20,9 +20,8 @@ const loginUser = async (req, res) => {
         }
 
         const token = jwt.sign({ userId: user._id, email: user.email, isAdmin: user.isAdmin }, 'your-secret-key');
-        const decodedToken = jwt.verify(token, 'your-secret-key');
-        console.log("decoded------", decodedToken)
-        res.status(200).json({ token, id: user._id, email: user.email });
+        
+        res.status(200).json({ token, id: user._id, email: user.email, username: user.username, isAdmin: user.isAdmin });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });

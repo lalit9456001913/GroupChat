@@ -20,7 +20,7 @@ export const GET_USER_BY_ID_URL = (id) => UrlParamsReplace("/users/:id", { id })
 
 export const CREATE_GROUP_URL = UrlParamsReplace('/groups');
 export const UPDATE_GROUP_URL = (id, userId) => UrlParamsReplace('/groups/:id/users/:userId', { id, userId });
-export const DELETE_GROUP_URL = (id) => UrlParamsReplace('/groups/:id', { id });
+export const DELETE_GROUP_URL = (id, userId) => UrlParamsReplace('/groups/:id/users/:userId', { id, userId });
 export const GET_GROUP_BY_ID_URL = (id) => UrlParamsReplace("/groups/:id", { id });
 export const GET_ALL_GROUPS = UrlParamsReplace("/groups");
 

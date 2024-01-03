@@ -5,6 +5,7 @@ import SendMessageForm from '../../components/SendMessageForm';
 import { socket, socketEmit } from '../../../services/socket';
 import { getAuth } from '../../../services/auth.service';
 import { getAllGroupMessages } from '../../../services/message.service';
+
 const GroupDetails = () => {
 
     const [messages, setMessages] = useState([]);
@@ -48,7 +49,6 @@ const GroupDetails = () => {
         if (!socket.connected) socket.connect();
 
         socket.on('message', ({ message }) => {
-            console.log('Received Message:', message);
             setMessages((prevMessages) => [...prevMessages, message]);
         });
 
@@ -96,6 +96,7 @@ const GroupDetails = () => {
 
     return (
         <div>
+            <div onClick={() => { router.push('/dashboard') }}>Home</div>
             <h2>{name} Group Details</h2>
 
             <div>
@@ -112,6 +113,7 @@ const GroupDetails = () => {
                                 {member.name} - {member.email}
                             </li>
                         ))}
+
                     </ul>
                 ) : (
                     <p>No group members yet.</p>
@@ -123,7 +125,7 @@ const GroupDetails = () => {
                 <p>{members.length}</p>
             </div>
 
-            <SendMessageForm onSendMessage={handleSendMessage} messages={messages} />
+            {(group.members.some(member => member._id == auth.id)) && <SendMessageForm onSendMessage={handleSendMessage} messages={messages} />}
         </div>
     );
 };
