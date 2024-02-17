@@ -6,7 +6,7 @@ const MessageList = ({ messages }) => {
     <div style={styles.chatbox}>
       <h2>Chatbox</h2>
       <ul style={styles.messageList}>
-        {messages.map((message, index) => (
+        {messages?.length && messages?.map((message, index) => (
           <li
             key={index}
             style={message.sender === 'user' ? styles.userMessage : styles.otherMessage}

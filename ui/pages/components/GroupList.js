@@ -47,8 +47,8 @@ const GroupList = ({ auth, groups, onDeleteGroup }) => {
     <>
       <GroupContainer style={{ display: 'inline-block', verticalAlign: 'top' }}>
         <h2>{auth?.username} Messaging Groups</h2>
-        {groups.map((group) => {
-          if (group.members.some(member => member._id == auth.id)) {
+        {groups?.length && groups?.map((group) => {
+          if (group?.members?.some(member => member._id == auth.id)) {
             return (
               <GroupItem key={group._id}>
                 <div>
@@ -57,7 +57,7 @@ const GroupList = ({ auth, groups, onDeleteGroup }) => {
                 <div>
                   <button onClick={() => { router.push(`/groups/${group?._id}`) }}>view</button>
                   <button onClick={() => { router.push(`/groups/${group?._id}/edit`) }}>Edit</button>
-                  {auth.isAdmin && <button onClick={() => { onDelete(group?._id, group?.admin) }}>Delete</button>}
+                  {auth?.isAdmin && <button onClick={() => { onDelete(group?._id, group?.admin) }}>Delete</button>}
                 </div>
               </GroupItem>
             )
@@ -66,7 +66,7 @@ const GroupList = ({ auth, groups, onDeleteGroup }) => {
       </GroupContainer>
       <GroupContainer style={{ display: 'inline-block', verticalAlign: 'top' }}>
         <h2>{auth?.username} Groups (Admin)</h2>
-        {groups.map((group) => {
+        {groups?.length && groups?.map((group) => {
           if (group.admin == auth.id) {
             return (
               <GroupItem key={group._id}>
@@ -85,7 +85,7 @@ const GroupList = ({ auth, groups, onDeleteGroup }) => {
       </GroupContainer>
       <GroupContainer style={{ display: 'inline-block', verticalAlign: 'top' }}>
         <h2>All Group List</h2>
-        {groups.map((group) => (
+        {groups?.length && groups?.map((group) => (
           <GroupItem key={group._id}>
             <div>
               <h3>{group.name}</h3>

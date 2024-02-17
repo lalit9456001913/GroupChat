@@ -8,7 +8,7 @@ const GroupDetail = ({ group, messages, onSendMessage }) => {
     <div>
 
       <>
-        <h3>{`Chat for Group: ${group.name}`}</h3>
+        <h3>{`Chat for Group: ${group?.name}`}</h3>
         <MessageList messages={messages} />
         <SendMessageForm  onSendMessage={onSendMessage} />
       </>

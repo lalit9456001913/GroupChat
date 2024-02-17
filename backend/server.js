@@ -4,7 +4,7 @@ const cors = require('cors');
 const http = require('http');
 const socketIo = require('socket.io');
 const db = require('./db'); // Reuse the database connection
-
+const path = require("path");
 
 const app = express();
 const server = http.createServer(app);
@@ -20,6 +20,7 @@ const messageService = require('./services/messages/messageService');
 
 const port = process.env.PORT || 5000;
 
+app.use(express.static(path.join(__dirname, ".next"))); // put this line of code in app.js
 app.use(bodyParser.json());
 
 

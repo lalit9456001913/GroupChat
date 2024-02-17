@@ -45,7 +45,7 @@ const UserDetails = ({ users, auth }) => {
     return (
         <UserContainer>
             <h2>User List</h2>
-            {users.map((user) => (
+            {users?.length && users?.map((user) => (
                 <UserItem key={user._id}>
                     <div>
                         <h3>{user.name}</h3>
