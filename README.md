@@ -19,13 +19,10 @@ Make sure you have the following installed:
     cd GroupChat
 
 2. **change the directory for backend :**
-   cd backend
-   npm i
-   npm start
-
-
+   cd backend && npm install && npm start
+   
 3. **change the directory for ui :**
-   cd ui
-   npm i
-   npm run dev
+   cd ui && npm install && npm run dev
+   
+   
 
