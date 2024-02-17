@@ -20,7 +20,6 @@ const messageService = require('./services/messages/messageService');
 
 const port = process.env.PORT || 5000;
 
-app.use(express.static(path.join(__dirname, ".next"))); // put this line of code in app.js
 app.use(bodyParser.json());
 
 
