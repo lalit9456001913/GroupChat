@@ -1,12 +1,7 @@
 require('dotenv').config(); // Load environment variables from .env
-
 const mongoose = require('mongoose');
 
-const dbHost = process.env.MONGODB_HOST;
-const dbPort = process.env.MONGODB_PORT;
-const dbName = process.env.MONGODB_DBNAME;
-
-const dbURL = `mongodb://${dbHost}:${dbPort}/${dbName}`;
+const dbURL = process.env.MONGODB_URI;
 
 mongoose.connect(dbURL);
 
@@ -26,4 +21,3 @@ db.on('disconnected', () => {
 });
 
 module.exports = db; // Export the db object
-
