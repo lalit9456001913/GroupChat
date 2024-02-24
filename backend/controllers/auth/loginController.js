@@ -8,7 +8,7 @@ const loginUser = async (req, res) => {
 
     try {
         const user = await User.findOne({ email });
-
+        
         if (!user) {
             return res.status(401).json({ error: 'Invalid credentials' });
         }
@@ -20,7 +20,7 @@ const loginUser = async (req, res) => {
         }
 
         const token = jwt.sign({ userId: user._id, email: user.email, isAdmin: user.isAdmin }, 'your-secret-key');
-        
+
         res.status(200).json({ token, id: user._id, email: user.email, username: user.username, isAdmin: user.isAdmin });
     } catch (error) {
         console.error(error);

@@ -1,4 +1,4 @@
-const ApiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const ApiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const UrlParamsReplace = (url, params = {}) => {
     let urlWithPrefix = `${ApiUrl}${url}`;
