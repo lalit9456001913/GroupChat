@@ -26,6 +26,14 @@ app.use(bodyParser.json());
 
 app.use(cors());
 
+app.get('/', (req, res) => {
+  try {
+    res.json({ status: 200, message: "backend is running properly" })
+  }
+  catch {
+    res.json({ status: 500, message: "Internal server error!" })
+  }
+})
 app.use('/login', authRoutes);
 app.use('/users', userRoutes);
 app.use('/groups', groupRoutes);
