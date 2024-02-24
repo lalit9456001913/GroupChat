@@ -17,7 +17,7 @@ const groupRoutes = require('./routes/groups');
 const messageRoutes = require('./routes/messages');
 const messageService = require('./services/messages/messageService');
 
-
+console.log("======", process.env.PORT)
 const port = process.env.PORT || 5000;
 
 app.use(bodyParser.json());

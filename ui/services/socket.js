@@ -1,7 +1,8 @@
 import { io } from 'socket.io-client';
 // import { getAuth } from './auth.service';
+const ApiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-export const socket = io("http://localhost:5000", {
+export const socket = io(ApiUrl, {
     autoConnect: false,
     transports: ["websocket"],
     // reconnection: false, // Disable automatic reconnection
